@@ -1,7 +1,82 @@
-<form action = "" method = "get">
-  <label for="enter_text">Enter Text: </label>
-  <input id="enter_text" type="text" name="enter_text">
-  <input type="submit" value="OK">
-  <p> {{ output }} </p>
-</form>
+<!DOCTYPE html>
+<html>
+  <link href="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.contextMenu.js" type="text/javascript"></script>
+
+  <script src="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.ui.position.min.js" type="text/javascript"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+  <style>
+    .menu {
+  background: #fff;
+  width: 60px;
+  padding: 3px 10px;
+  box-shadow: 0 0 10px -3px rgba(0, 0, 0, .3);
+  border: 1px solid #ccc;
+  display: none;
+  position: absolute;
+}
+  </style>
+
+  <style>
+    #editor {
+      position: absolute;
+      width: 500px;
+      height: 400px;
+    }
+  </style>
+
+<body>
+
+  <textarea>Enter some text.</textarea>
+    <p id="log"></p>
+  <div class="menu">
+    <p> {{ output }} </p>
+  </div>
+
+<script>
+function logSelection(event) {
+  const log = document.getElementById('log');
+  const selection = event.target.value.substring(event.target.selectionStart, event.target.selectionEnd);
+  log.textContent = `You selected: ${selection}`;
+  
+  $.ajax({
+    type: "GET",
+    url:  'ajax-test-view',
+    data: $(selection) , 
+    //data: {csrfmiddlewaretoken: '{{ csrf_token }}',
+    //text: ${selection}},   /* Passing the text data */
+    success:  function(response){
+      alert("success");
+    }
+   });
+}
+
+const textarea = document.querySelector('textarea');
+textarea.onselect = logSelection;
+</script>
+
+<script type="text/javascript">
+        
+  //Now add the jQuery
+$(document).ready(function() { //Just starting up here
+var menu = $('.menu');//get the menu
+$(document).on('contextmenu', function(e) {//What this does is simply; if right-click, run function(contains an event)
+e.preventDefault();//Prevent the default action: the normal right-click-menu to show
+menu.css({
+  display: 'block',//show the menu
+  top: e.pageY,//make the menu be where you click (y)
+  left: e.pageX//make the menu be where you click (x)
+});
+});
+$(document).click(function() { //When you left-click
+menu.css({ display: 'none' });//Hide the menu
+});
+});
+</script>
+
+</body>
+</html>
 
